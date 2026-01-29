@@ -1,7 +1,12 @@
+"use client"
+
 import React from "react";
 import Link from "next/link";
+export default function AdminDashboard({children}){
 
-export default function AdminLayout({ children }) {
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Header */}
