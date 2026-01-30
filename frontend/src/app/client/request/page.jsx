@@ -1,6 +1,70 @@
 "use client";
 
+import { useState } from 'react';
+import { submitServiceRequest } from '@/actions/client/request.action';
+
 export default function Page() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phoneNumber: '',
+    area: '',
+    workType: '',
+    description: '',
+    plotSize: '',
+    floors: '',
+    constructionType: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setErrorMessage('');
+
+    try {
+      const result = await submitServiceRequest(formData);
+
+      if (result.success) {
+        setSubmitStatus('success');
+        // Reset form
+        setFormData({
+          fullName: '',
+          phoneNumber: '',
+          area: '',
+          workType: '',
+          description: '',
+          plotSize: '',
+          floors: '',
+          constructionType: ''
+        });
+        
+        // Clear success message after 5 seconds
+        setTimeout(() => setSubmitStatus(null), 5000);
+      } else {
+        setSubmitStatus('error');
+        setErrorMessage(result.error || 'Something went wrong');
+      }
+
+    } catch (error) {
+      console.error('Error:', error);
+      setSubmitStatus('error');
+      setErrorMessage('Failed to submit request');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* ================= MAIN ================= */}
@@ -28,13 +92,34 @@ export default function Page() {
                 Fill in your details and we'll get back to you within 24 hours
               </p>
 
-              <form className="space-y-6">
+              {/* Status Messages */}
+              {submitStatus === 'success' && (
+                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                  <p className="text-green-800 text-sm">
+                    ✓ Your request has been submitted successfully! We'll contact you within 24 hours.
+                  </p>
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-red-800 text-sm">
+                    ✗ {errorMessage || 'Something went wrong. Please try again.'}
+                  </p>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
 
                 {/* Name + Phone */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="text-sm text-gray-600">Full Name *</label>
                     <input
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      required
                       className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
                       placeholder="Enter your name"
                     />
@@ -43,6 +128,10 @@ export default function Page() {
                   <div>
                     <label className="text-sm text-gray-600">Phone Number *</label>
                     <input
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      required
                       className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
                       placeholder="+91 XXXXX XXXXX"
                     />
@@ -54,6 +143,10 @@ export default function Page() {
                   <div>
                     <label className="text-sm text-gray-600">Area / Location *</label>
                     <input
+                      name="area"
+                      value={formData.area}
+                      onChange={handleChange}
+                      required
                       className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
                       placeholder="Enter your area"
                     />
@@ -62,15 +155,63 @@ export default function Page() {
                   <div>
                     <label className="text-sm text-gray-600">Type of Work *</label>
                     <select
-                      defaultValue=""
+                      name="workType"
+                      value={formData.workType}
+                      onChange={handleChange}
+                      required
                       className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
                     >
                       <option value="" disabled>Select work type</option>
-                      <option>Repair</option>
-                      <option>Renovation</option>
-                      <option>New Construction</option>
+                      <option value="Repair">Repair</option>
+                      <option value="Renovation">Renovation</option>
+                      <option value="New Construction">New Construction</option>
                     </select>
                   </div>
+                </div>
+
+                {/* Plot Size + Floors */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm text-gray-600">Plot Size (sq ft)</label>
+                    <input
+                      type="number"
+                      name="plotSize"
+                      value={formData.plotSize}
+                      onChange={handleChange}
+                      min="0"
+                      className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
+                      placeholder="e.g. 1200"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-gray-600">Number of Floors</label>
+                    <input
+                      type="number"
+                      name="floors"
+                      value={formData.floors}
+                      onChange={handleChange}
+                      min="0"
+                      className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
+                      placeholder="e.g. 2"
+                    />
+                  </div>
+                </div>
+
+                {/* Construction Type */}
+                <div>
+                  <label className="text-sm text-gray-600">Construction Type</label>
+                  <select
+                    name="constructionType"
+                    value={formData.constructionType}
+                    onChange={handleChange}
+                    className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
+                  >
+                    <option value="">Select construction type</option>
+                    <option value="Basic">Basic</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Premium">Premium</option>
+                  </select>
                 </div>
 
                 {/* Description */}
@@ -79,6 +220,9 @@ export default function Page() {
                     Description (Optional)
                   </label>
                   <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
                     rows={4}
                     className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-orange-600 outline-none"
                     placeholder="Tell us more about your requirements..."
@@ -88,9 +232,10 @@ export default function Page() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-md"
+                  disabled={isSubmitting}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  📋 Submit Request
+                  {isSubmitting ? '⏳ Submitting...' : '📋 Submit Request'}
                 </button>
 
               </form>

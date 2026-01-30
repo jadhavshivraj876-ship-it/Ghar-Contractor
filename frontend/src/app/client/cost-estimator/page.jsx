@@ -1,9 +1,6 @@
 "use client";
 
-
-
-import { generateCostEstimate } from "@/app/actions/ai/costEstimate.actions";
-
+import { generateCostEstimate } from "@/actions/ai/costEstimate.actions";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,43 +14,41 @@ import {
 
 export default function ConstructionCostEstimator() {
   const [plotSize, setPlotSize] = useState("");
-  const [floors, setFloors] = useState("1");
+  const [floors, setFloors] = useState("");
   const [type, setType] = useState("standard");
   const [estimate, setEstimate] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  
-    
-     const calculateEstimate = async () => {
-  if (!plotSize) return;
+  const calculateEstimate = async () => {
+    if (!plotSize || !floors || Number(floors) < 1) {
+      setEstimate("Please enter valid plot size and number of floors.");
+      return;
+    }
 
-  setLoading(true);
-  setEstimate(null);
+    setLoading(true);
+    setEstimate(null);
 
-  try {
-    const result = await generateCostEstimate(
-      Number(plotSize),
-      Number(floors),
-      type
-    );
+    try {
+      const result = await generateCostEstimate(
+        Number(plotSize),
+        Number(floors),
+        type
+      );
 
-    // format estimate
-    setEstimate(
-      `₹${result.estimatedCostMin.toLocaleString()} - ₹${result.estimatedCostMax.toLocaleString()}`
-    );
-
-  } catch (error) {
-    console.error(error);
-    setEstimate("Unable to calculate estimate right now.");
-  } finally {
-    setLoading(false);
-  }
-};
+      setEstimate(
+        `₹${result.estimatedCostMin.toLocaleString()} - ₹${result.estimatedCostMax.toLocaleString()}`
+      );
+    } catch (error) {
+      console.error(error);
+      setEstimate("Unable to calculate estimate right now.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Heading */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900">
@@ -65,7 +60,6 @@ export default function ConstructionCostEstimator() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
-
           {/* Form Card */}
           <Card>
             <CardHeader>
@@ -75,7 +69,7 @@ export default function ConstructionCostEstimator() {
             </CardHeader>
 
             <CardContent className="space-y-6">
-
+              {/* Plot Size */}
               <div>
                 <label className="text-sm text-gray-600">
                   Plot Size (sq ft)
@@ -89,45 +83,45 @@ export default function ConstructionCostEstimator() {
                 />
               </div>
 
+              {/* Floors INPUT (Updated) */}
               <div>
                 <label className="text-sm text-gray-600">
                   Number of Floors
                 </label>
-                <Select value={floors} onValueChange={setFloors}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select floors" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 Floor</SelectItem>
-                    <SelectItem value="2">2 Floors</SelectItem>
-                    <SelectItem value="3">3 Floors</SelectItem>
-                    <SelectItem value="4">4 Floors</SelectItem>
-                  </SelectContent>
-                </Select>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 2"
+                  value={floors}
+                  onChange={(e) => setFloors(e.target.value)}
+                  className="w-full mt-1 px-3 py-2 border rounded-md"
+                />
               </div>
 
+              {/* Construction Type */}
               <div>
                 <label className="text-sm text-gray-600">
                   Construction Type
                 </label>
                 <Select value={type} onValueChange={setType}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="basic">
-                      Basic (₹1,200–₹1,500 / sq ft)
+                      Basic 
                     </SelectItem>
                     <SelectItem value="standard">
-                      Standard (₹1,800–₹2,200 / sq ft)
+                      Standard 
                     </SelectItem>
                     <SelectItem value="premium">
-                      Premium (₹2,800–₹3,500 / sq ft)
+                      Premium 
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
+              {/* Button */}
               <Button
                 size="lg"
                 onClick={calculateEstimate}
@@ -136,7 +130,6 @@ export default function ConstructionCostEstimator() {
               >
                 {loading ? "Calculating..." : "Calculate Estimate"}
               </Button>
-
             </CardContent>
           </Card>
 
@@ -145,14 +138,12 @@ export default function ConstructionCostEstimator() {
             <CardContent className="text-center py-20">
               {estimate ? (
                 <>
-                  <h3 className="text-2xl font-bold">
-                    Your Estimate ✅
-                  </h3>
+                  <h3 className="text-2xl font-bold">Your Estimate ✅</h3>
                   <p className="text-4xl font-bold text-orange-600 mt-4">
                     {estimate}
                   </p>
                   <p className="text-sm text-gray-600 mt-3">
-                    This estimate is generated by AI.
+                    This is a rough estimate. Final cost depends on site visit and material selection
                   </p>
                 </>
               ) : (
@@ -164,7 +155,6 @@ export default function ConstructionCostEstimator() {
               )}
             </CardContent>
           </Card>
-
         </div>
       </div>
     </section>
