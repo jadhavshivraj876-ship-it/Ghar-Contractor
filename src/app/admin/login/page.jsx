@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { loginAdmin } from '@/actions/admin/auth.actions'
 import { createBrowserClient } from '@/lib/supabase/client'
 import {
@@ -67,25 +68,36 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-100 px-4">
-      
-      {/* Background glow */}
-      <div className="absolute inset-0 -z-10 flex justify-center items-center">
-        <div className="h-96 w-96 rounded-full bg-orange-300/20 blur-3xl" />
-      </div>
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-100 px-4">
 
+      {/* Login Card */}
       <Card
         className="relative w-full max-w-xl overflow-hidden
                    border border-orange-100
                    shadow-2xl hover:shadow-orange-200/50
                    transition-all duration-300 hover:-translate-y-1"
       >
-        <CardHeader className="text-center pb-6 pt-8">
+        <CardHeader className="text-center pb-6 pt-8 relative">
+
+          {/* Back Arrow inside card */}
+          <div className="absolute -top-2 left-6">
+            <Link href="/">
+              <button className="flex items-center gap-1 text-orange-600 hover:text-orange-800 transition text-2xl p-2 rounded-full hover:bg-orange-100">
+                ←
+              </button>
+            </Link>
+          </div>
+
+          {/* Logo */}
           <div
             className="mx-auto mb-4 flex h-16 w-16 items-center justify-center
-                       rounded-full bg-orange-100 text-4xl shadow-inner"
+                        rounded-full bg-orange-100 shadow-inner overflow-hidden"
           >
-            🏗️
+            <img
+              src="/logo.jpeg"
+              alt="Ghar Contractor"
+              className="w-full h-full object-contain"
+            />
           </div>
 
           <CardTitle className="text-3xl font-bold text-gray-900">
@@ -105,7 +117,6 @@ export default function AdminLoginPage() {
           )}
           
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -156,6 +167,11 @@ export default function AdminLoginPage() {
           </p>
         </CardContent>
       </Card>
+
+      {/* Background glow */}
+      <div className="absolute inset-0 -z-10 flex justify-center items-center">
+        <div className="h-96 w-96 rounded-full bg-orange-300/20 blur-3xl" />
+      </div>
     </div>
   )
 }
