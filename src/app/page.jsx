@@ -43,25 +43,14 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo */}
             {/* Logo */}
-            <Link
-            href="/"
-            className="flex items-center gap-3 "
-            >
-            <div className="text-orange-500">
-                <svg
-                width="36"
-                height="36"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                >
-                <path d="M19 9.3V4h-3v2.6L12 3 2 12h3v8h5v-6h4v6h5v-8h3l-3-2.7z" />
-                </svg>
+           <Link href="/" className="flex items-center gap-3">
+            <div className="w-9 h-9">
+              <img src="/logo.jpeg" alt="Ghar Contractor" className="w-full h-full object-contain" />
             </div>
-
             <span className="text-2xl font-extrabold tracking-wide text-gray-900 group-hover:text-orange-600 transition-colors">
-                Ghar Contractor
+              Ghar Contractor
             </span>
-            </Link>
+          </Link>
 
 
           {/* Navigation */}
@@ -445,15 +434,8 @@ export default function LandingPage() {
             {/* Company Info */}
             <div className="pr-8">
               <Link href="/" className="flex items-center gap-2 mb-4 hover:opacity-90 transition">
-                <div className="text-orange-500">
-                  <svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M19 9.3V4h-3v2.6L12 3 2 12h3v8h5v-6h4v6h5v-8h3l-3-2.7zm-9 .7c0-1.1.9-2 2-2s2 .9 2 2h-4z" />
-                  </svg>
+                <div className="w-9 h-9">
+                  <img src="/logo.jpeg" alt="Ghar Contractor" className="w-full h-full object-contain" />
                 </div>
                 <span className="text-xl font-bold">Ghar Contractor</span>
               </Link>
