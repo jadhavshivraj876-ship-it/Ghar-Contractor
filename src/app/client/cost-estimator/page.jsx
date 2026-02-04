@@ -2,6 +2,7 @@
 
 import { generateCostEstimate } from "@/actions/ai/costEstimate.actions";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,10 +14,12 @@ import {
 } from "@/components/ui/select";
 
 export default function ConstructionCostEstimator() {
+  const router = useRouter();
   const [plotSize, setPlotSize] = useState("");
   const [floors, setFloors] = useState("");
   const [type, setType] = useState("standard");
   const [estimate, setEstimate] = useState(null);
+  const [rawEstimate, setRawEstimate] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const calculateEstimate = async () => {
@@ -35,6 +38,7 @@ export default function ConstructionCostEstimator() {
         type
       );
 
+      setRawEstimate(result);
       setEstimate(
         `₹${result.estimatedCostMin.toLocaleString()} - ₹${result.estimatedCostMax.toLocaleString()}`
       );
@@ -109,13 +113,13 @@ export default function ConstructionCostEstimator() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="basic">
-                      Basic 
+                      Basic
                     </SelectItem>
                     <SelectItem value="standard">
-                      Standard 
+                      Standard
                     </SelectItem>
                     <SelectItem value="premium">
-                      Premium 
+                      Premium
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -145,6 +149,22 @@ export default function ConstructionCostEstimator() {
                   <p className="text-sm text-gray-600 mt-3">
                     This is a rough estimate. Final cost depends on site visit and material selection
                   </p>
+
+                  <Button
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        plotSize,
+                        floors,
+                        type,
+                        minCost: rawEstimate?.estimatedCostMin?.toString() || '',
+                        maxCost: rawEstimate?.estimatedCostMax?.toString() || ''
+                      });
+                      router.push(`/client/request?${params.toString()}`);
+                    }}
+                    className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  >
+                    Proceed to Service Request →
+                  </Button>
                 </>
               ) : (
                 <p className="text-gray-600">

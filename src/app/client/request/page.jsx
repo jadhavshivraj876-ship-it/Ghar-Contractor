@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from 'react';
-import { submitServiceRequest } from '@/actions/client/request.actions';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { submitServiceRequest, submitRequestFromEstimator } from '@/actions/client/request.actions';
 
-export default function Page() {
+function RequestFormContent() {
+  const searchParams = useSearchParams();
+
+  const [constructionDetails, setConstructionDetails] = useState(null);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -13,6 +18,26 @@ export default function Page() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+
+  useEffect(() => {
+    const plotSize = searchParams.get('plotSize');
+    const floors = searchParams.get('floors');
+    const type = searchParams.get('type');
+    const minCost = searchParams.get('minCost');
+    const maxCost = searchParams.get('maxCost');
+
+    if (plotSize && floors && type) {
+      setConstructionDetails({
+        plot_size: Number(plotSize),
+        floors: Number(floors),
+        construction_type: type,
+        estimated_cost_min: minCost ? Number(minCost) : null,
+        estimated_cost_max: maxCost ? Number(maxCost) : null
+      });
+      // Pre-select 'New Construction' if coming from estimator
+      setFormData(prev => ({ ...prev, work_type: 'New Construction' }));
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +52,16 @@ export default function Page() {
     setLoading(true);
     setMessage({ type: '', text: '' });
 
-    const result = await submitServiceRequest(formData);
+    let result;
+
+    if (constructionDetails) {
+      result = await submitRequestFromEstimator({
+        ...formData,
+        ...constructionDetails
+      });
+    } else {
+      result = await submitServiceRequest(formData);
+    }
 
     if (result.success) {
       setMessage({ type: 'success', text: result.message });
@@ -61,8 +95,28 @@ export default function Page() {
             Tell us about your project and our team will get back to you within 24 hours.
           </p>
 
-          {/* Card */}
-          <div className="flex justify-center">
+          <div className="flex justify-center flex-col items-center gap-6">
+
+            {/* Construction Details Card (if present) */}
+            {constructionDetails && (
+              <div className="w-full max-w-xl bg-orange-50 border border-orange-200 rounded-xl p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-orange-800 mb-2">
+                  🏗️ Project Summary from Estimator
+                </h3>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  <p><span className="text-gray-500">Plot:</span> {constructionDetails.plot_size} sqft</p>
+                  <p><span className="text-gray-500">Floors:</span> {constructionDetails.floors}</p>
+                  <p><span className="text-gray-500">Type:</span> <span className="capitalize">{constructionDetails.construction_type}</span></p>
+                  {constructionDetails.estimated_cost_min && (
+                    <p className="col-span-2 text-orange-700 font-bold border-t border-orange-200 pt-2 mt-1">
+                      Est. Cost: ₹{constructionDetails.estimated_cost_min.toLocaleString()} - ₹{constructionDetails.estimated_cost_max?.toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Form Card */}
             <div className="w-full max-w-xl bg-white rounded-xl shadow hover:shadow-lg transition-shadow p-8">
 
               <h3 className="text-2xl font-bold text-gray-900">
@@ -75,11 +129,10 @@ export default function Page() {
 
               {/* Success/Error Message */}
               {message.text && (
-                <div className={`mb-6 p-4 rounded-md ${
-                  message.type === 'success' 
-                    ? 'bg-green-50 border border-green-200 text-green-800' 
+                <div className={`mb-6 p-4 rounded-md ${message.type === 'success'
+                    ? 'bg-green-50 border border-green-200 text-green-800'
                     : 'bg-red-50 border border-red-200 text-red-800'
-                }`}>
+                  }`}>
                   {message.text}
                 </div>
               )}
@@ -175,5 +228,13 @@ export default function Page() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <RequestFormContent />
+    </Suspense>
   );
 }

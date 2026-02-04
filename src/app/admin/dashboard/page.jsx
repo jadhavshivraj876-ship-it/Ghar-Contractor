@@ -50,8 +50,8 @@ export default function AdminDashboard() {
   const statusOptions = ["New", "Contacted", "Completed"];
   const filterButtons = ["All", "New", "Contacted", "Completed"];
 
-  const filteredRequests = statusFilter === "All" 
-    ? requests 
+  const filteredRequests = statusFilter === "All"
+    ? requests
     : requests.filter(r => r.status === statusFilter);
 
   const stats = {
@@ -147,7 +147,20 @@ export default function AdminDashboard() {
                       <td className="px-6 py-4 text-gray-700">{r.area}</td>
                       <td className="px-6 py-4 text-gray-700">{r.work_type}</td>
                       <td className="px-6 py-4 text-gray-700 max-w-xs break-words">
-                        {r.description || "—"}
+                        {r.plot_size && (
+                          <div className="mb-3 p-2 bg-orange-50 border border-orange-100 rounded text-xs space-y-1">
+                            <p className="font-bold text-orange-800 mb-1">Project Summary from Estimator:</p>
+                            <p><span className="font-semibold text-gray-600">Plot Size:</span> {r.plot_size} sqft</p>
+                            <p><span className="font-semibold text-gray-600">Floors:</span> {r.floors}</p>
+                            <p><span className="font-semibold text-gray-600">Type:</span> <span className="capitalize">{r.construction_type}</span></p>
+                            {r.estimated_cost_min && (
+                              <p className="text-orange-600 font-bold border-t border-orange-100 pt-1 mt-1">
+                                <span className="text-gray-600">Est. Cost:</span> ₹{r.estimated_cost_min.toLocaleString()} - ₹{r.estimated_cost_max?.toLocaleString()}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                        {r.description || (r.plot_size ? "" : "—")}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2 flex-wrap">
@@ -155,11 +168,10 @@ export default function AdminDashboard() {
                             <button
                               key={status}
                               onClick={() => handleUpdateStatus(r.id, status)}
-                              className={`px-3 py-1 rounded-full text-sm font-semibold transition ${
-                                r.status === status
-                                  ? getStatusColor(status)
-                                  : "bg-gray-100 text-gray-400 hover:text-gray-700"
-                              }`}
+                              className={`px-3 py-1 rounded-full text-sm font-semibold transition ${r.status === status
+                                ? getStatusColor(status)
+                                : "bg-gray-100 text-gray-400 hover:text-gray-700"
+                                }`}
                             >
                               {status}
                             </button>

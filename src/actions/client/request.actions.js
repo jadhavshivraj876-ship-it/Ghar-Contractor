@@ -23,7 +23,7 @@ export async function submitServiceRequest(formData) {
     // Validate phone number (basic Indian phone validation)
     const phoneRegex = /^[6-9]\d{9}$/
     const cleanPhone = phone.replace(/\s+/g, '').replace(/^\+91/, '')
-    
+
     if (!phoneRegex.test(cleanPhone)) {
       return {
         success: false,
@@ -86,15 +86,17 @@ export async function submitServiceRequest(formData) {
  */
 export async function submitRequestFromEstimator(formData) {
   try {
-    const { 
-      name, 
-      phone, 
-      area, 
-      work_type, 
+    const {
+      name,
+      phone,
+      area,
+      work_type,
       description,
       plot_size,
       floors,
-      construction_type
+      construction_type,
+      estimated_cost_min,
+      estimated_cost_max
     } = formData
 
     if (!name || !phone || !area || !work_type) {
@@ -107,7 +109,7 @@ export async function submitRequestFromEstimator(formData) {
     // Validate phone number
     const phoneRegex = /^[6-9]\d{9}$/
     const cleanPhone = phone.replace(/\s+/g, '').replace(/^\+91/, '')
-    
+
     if (!phoneRegex.test(cleanPhone)) {
       return {
         success: false,
@@ -131,6 +133,8 @@ export async function submitRequestFromEstimator(formData) {
           plot_size: plot_size || null,
           floors: floors || null,
           construction_type: construction_type || null,
+          estimated_cost_min: estimated_cost_min || null,
+          estimated_cost_max: estimated_cost_max || null,
           status: 'New',
           created_at: new Date().toISOString()
         }
