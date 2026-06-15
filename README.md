@@ -1,40 +1,149 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ghar Contractor – Construction Service Management Platform
 
-## Getting Started
+## Overview
 
-First, run the development server:
+Ghar Contractor is a web-based platform developed to connect homeowners with contractors and construction service providers. The platform streamlines the process of finding contractors, managing projects, and tracking construction-related services through a modern and responsive web application.
+
+## Project Objective
+
+The goal of Ghar Contractor is to simplify communication between customers and contractors while providing a centralized platform for project management and service requests.
+
+## Features
+
+### User Features
+
+* User Registration and Authentication
+* Browse Available Contractors
+* View Contractor Profiles
+* Request Construction Services
+* Track Service Requests
+* Contact Contractors Directly
+* Responsive User Dashboard
+
+### Contractor Features
+
+* Contractor Registration
+* Profile Management
+* Service Listings
+* Manage Customer Requests
+* Project Status Updates
+
+### Admin Features
+
+* User Management
+* Contractor Verification
+* Service Monitoring
+* Dashboard Analytics
+* Content Management
+
+## Technology Stack
+
+### Frontend
+
+* Next.js
+* React.js
+* TypeScript
+* Tailwind CSS
+
+### Backend
+
+* Supabase
+* PostgreSQL Database
+
+### Development Tools
+
+* VS Code
+* Git & GitHub
+* Figma
+
+## System Architecture
+
+* Frontend: Next.js
+* Backend Services: Supabase
+* Database: PostgreSQL
+* Authentication: Supabase Auth
+* Deployment: Vercel
+
+## Key Features Implemented
+
+* Secure User Authentication
+* Responsive UI Design
+* Dynamic Routing
+* Database Integration
+* Contractor Listing System
+* Service Request Management
+* Dashboard Functionality
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/your-username/ghar-contractor.git
+```
+
+### Navigate to Project
+
+```bash
+cd ghar-contractor
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Configure Environment Variables
+
+Create a `.env.local` file:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+```
+
+### Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Folder Structure
 
-## Learn More
+```text
+ghar-contractor/
+│
+├── app/
+├── components/
+├── lib/
+├── public/
+├── styles/
+├── hooks/
+├── utils/
+└── supabase/
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Future Enhancements
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* AI-Based Contractor Recommendation
+* Real-Time Chat System
+* Project Cost Estimator
+* Online Payment Integration
+* Review & Rating System
+* Mobile Application Support
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Project Status
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Completed as an Internship Project and successfully demonstrated core construction service management functionalities.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# Ghar-Contractor-main
->>>>>>> af44c4b17c9751b73ef48e9fbf5ca772e0b7eaf9
+## License
+
+This project is developed for educational and internship purposes.
